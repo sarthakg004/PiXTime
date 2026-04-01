@@ -1,0 +1,10 @@
+einops==0.8.2
+matplotlib==3.10.8
+numpy==2.4.4
+pandas==3.0.2
+reformer_pytorch==1.4.4
+scikit_learn==1.8.0
+scipy==1.17.1
+sktime==0.40.1
+sympy==1.14.0
+torch==2.11.0
