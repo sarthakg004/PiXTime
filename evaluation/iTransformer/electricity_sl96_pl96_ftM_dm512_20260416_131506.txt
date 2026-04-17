@@ -1,0 +1,1 @@
+data=electricity, model=iTransformer, seq_len=96, pred_len=96, features=M, d_model=512, MSE=0.16274161636829376, MAE=0.25238335132598877

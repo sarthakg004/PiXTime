@@ -1,0 +1,1 @@
+data=ETTm1, model=DLinear, seq_len=96, pred_len=720, features=M, d_model=512, MSE=0.47156980633735657, MAE=0.4487936496734619

@@ -1,0 +1,1 @@
+data=traffic, model=DLinear, seq_len=96, pred_len=720, features=M, d_model=512, MSE=0.6938822269439697, MAE=0.42854931950569153

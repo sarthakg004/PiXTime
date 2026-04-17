@@ -1,0 +1,1 @@
+data=electricity, model=DLinear, seq_len=96, pred_len=720, features=M, d_model=512, MSE=0.2578061819076538, MAE=0.3496898412704468

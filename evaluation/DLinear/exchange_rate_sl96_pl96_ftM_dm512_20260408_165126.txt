@@ -1,0 +1,1 @@
+data=exchange_rate, model=DLinear, seq_len=96, pred_len=96, features=M, d_model=512, MSE=0.09452138096094131, MAE=0.22838294506072998

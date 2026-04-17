@@ -1,0 +1,1 @@
+data=ETTh2, model=iTransformer, seq_len=96, pred_len=720, features=M, d_model=128, MSE=0.4480999708175659, MAE=0.45568758249282837

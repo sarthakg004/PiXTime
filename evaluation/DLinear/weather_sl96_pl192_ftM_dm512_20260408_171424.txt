@@ -1,0 +1,1 @@
+data=weather, model=DLinear, seq_len=96, pred_len=192, features=M, d_model=512, MSE=0.23580831289291382, MAE=0.2931790351867676

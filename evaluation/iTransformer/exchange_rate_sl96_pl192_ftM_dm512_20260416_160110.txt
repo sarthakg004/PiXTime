@@ -1,0 +1,1 @@
+data=exchange_rate, model=iTransformer, seq_len=96, pred_len=192, features=M, d_model=512, MSE=0.22510212659835815, MAE=0.3456416726112366
