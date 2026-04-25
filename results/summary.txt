@@ -1,0 +1,25 @@
+
+================================================================================
+PiXTime Enhancement Results - MSE / MAE Comparison
+================================================================================
+
+### Dataset: ETTh1
+
+  Horizon T=96
+  Config                      MSE      MAE  vs baseline
+  ------------------------------------------------------
+  baseline                 0.3994   0.4084      +0.00%  
+  contextual_ve            0.3942   0.4040      -1.31% *
+  var_relation             0.3921   0.4038      -1.83% *
+  adaptive_patch           0.5906   0.5049     +47.86%  
+  multiscale_patch         0.3972   0.4091      -0.56% *
+  all_improvements         0.5890   0.5028     +47.45%  
+
+================================================================================
+Average MSE Improvement over Baseline (%)
+================================================================================
+  contextual_ve            : +1.31%
+  var_relation             : +1.83%
+  adaptive_patch           : -47.86%
+  multiscale_patch         : +0.56%
+  all_improvements         : -47.45%

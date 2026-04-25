@@ -73,7 +73,8 @@ class iTrans_ExEmbedding(nn.Module):
     def forward(self, x_enc):
         # Embedding
         enc_out = self.enc_embedding(x_enc, None) #[bs, seq_len, n_var] -> [bs, n_var, d_model]
-        enc_out = enc_out + self.pos_embedding(torch.arange(enc_out.shape[1]).cuda()).unsqueeze(0)
+        pos_ids = torch.arange(enc_out.shape[1], device=enc_out.device)
+        enc_out = enc_out + self.pos_embedding(pos_ids).unsqueeze(0)
         enc_out, attns = self.encoder(enc_out)
 
         return enc_out
