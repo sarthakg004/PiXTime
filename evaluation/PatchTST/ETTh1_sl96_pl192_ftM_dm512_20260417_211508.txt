@@ -1,0 +1,1 @@
+data=ETTh1, model=PatchTST, seq_len=96, pred_len=192, features=M, d_model=512, MSE=0.43030261993408203, MAE=0.43392911553382874

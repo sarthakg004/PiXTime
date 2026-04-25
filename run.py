@@ -1,6 +1,7 @@
 import argparse
 import math
 import os
+import csv
 import torch
 import random
 import copy
@@ -37,6 +38,11 @@ def get_device():
 
 def work_process(args):
     args.device = get_device()
+
+    # Keep run-level seeding explicit for reproducibility.
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
 
     train_loader, enc_in = data_provider(args, flag='train')
     val_loader, _ = data_provider(args, flag='val')
@@ -97,6 +103,16 @@ def work_process(args):
             de_d_ff=args.de_d_ff,
             en_layers=args.en_layers,
             de_layers=args.de_layers
+        )
+    elif args.model == 'PiXTime_Enhanced':
+        from models.PiXTime_Enhanced import Model as PiXTimeEnhancedModel
+
+        model = PiXTimeEnhancedModel(
+            args,
+            use_contextual_var_emb=args.use_contextual_var_emb,
+            use_var_relation=args.use_var_relation,
+            use_adaptive_patch=args.use_adaptive_patch,
+            use_multiscale_patch=args.use_multiscale_patch,
         )
     else:
         raise ValueError("Unknown model")
@@ -192,6 +208,15 @@ def work_process(args):
     mae, mse, rmse, mape, mspe = metric(preds, trues)
     print(f"Test -> MSE: {mse}, MAE: {mae}")
 
+    os.makedirs('results', exist_ok=True)
+    enhanced_csv = os.path.join('results', 'enhanced_results.csv')
+    write_header = not os.path.exists(enhanced_csv)
+    with open(enhanced_csv, 'a', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        if write_header:
+            writer.writerow(['dataset', 'pred_len', 'config', 'MSE', 'MAE'])
+        writer.writerow([args.data, args.pred_len, args.result_tag, float(mse), float(mae)])
+
     # Save results
     with open(args.evaluation, 'a') as f:
         f.write(
@@ -205,7 +230,12 @@ def work_process(args):
 def run():
     parser = argparse.ArgumentParser(description='Time Series Forecasting')
 
-    parser.add_argument('--model', type=str, default='PiXTime')
+    parser.add_argument(
+        '--model',
+        type=str,
+        default='PiXTime',
+        choices=['DLinear', 'PatchTST', 'iTransformer', 'TimeXer', 'PiXTime', 'PiXTime_Enhanced']
+    )
     parser.add_argument('--evaluation', type=str, default='./evaluation/')
     parser.add_argument('--data', type=str, default='ETTh1')
     parser.add_argument('--root_path', type=str, default='dataset/ETT-small/')
@@ -230,8 +260,21 @@ def run():
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--train_epochs', type=int, default=10)
     parser.add_argument('--learning_rate', type=float, default=0.0001)
+    parser.add_argument('--seed', type=int, default=47)
     parser.add_argument('--loss', type=str, default='MSE')
     parser.add_argument('--lradj', type=str, default='type1')
+
+    # Novel improvement flags
+    parser.add_argument('--use_contextual_var_emb', action='store_true', default=False,
+                        help='[Shashank] Dynamic contextual variable embeddings')
+    parser.add_argument('--use_var_relation', action='store_true', default=False,
+                        help='[Shashank] Variable relationship modeling via attention')
+    parser.add_argument('--use_adaptive_patch', action='store_true', default=False,
+                        help='[Tilak] Adaptive change-point-based patch embedding')
+    parser.add_argument('--use_multiscale_patch', action='store_true', default=False,
+                        help='[Tilak] Multi-scale patch embedding (8/16/32)')
+    parser.add_argument('--result_tag', type=str, default='baseline',
+                        help='Tag to identify this run configuration in results output')
 
     args = parser.parse_args()
 
@@ -251,6 +294,10 @@ def run():
 
     args.evaluation = os.path.join(model_dir, f"{exp_name}.txt")
 
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+
     print(args)
     work_process(args)
 
@@ -260,10 +307,6 @@ def run():
 
 
 if __name__ == '__main__':
-    fix_seed = 47
     torch.set_num_threads(6)
-    random.seed(fix_seed)
-    torch.manual_seed(fix_seed)
-    np.random.seed(fix_seed)
 
     run()

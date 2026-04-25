@@ -1,0 +1,1 @@
+data=ETTh1, model=TimeXer, seq_len=96, pred_len=336, features=M, d_model=512, MSE=0.47241899371147156, MAE=0.45546019077301025

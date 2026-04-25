@@ -4,4 +4,5 @@ dataset/*
 !dataset/data_factory.py
 !dataset/data_loader.py
 .claude
+.venv
 # evaluation

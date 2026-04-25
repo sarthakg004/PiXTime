@@ -1,0 +1,1 @@
+data=traffic, model=iTransformer, seq_len=96, pred_len=96, features=M, d_model=256, MSE=0.4969136714935303, MAE=0.3398674726486206

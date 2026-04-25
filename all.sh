@@ -1,35 +1,35 @@
 #!/bin/bash
 
-set -e  # Exit immediately if any command fails
+set -euo pipefail
 
-echo "🔧 Making all scripts executable..."
+# Run all PiXTime baseline + enhancement configurations and save detailed summaries.
+# Optional environment variables:
+#   PYTHON_BIN   (default: ./.venv/bin/python if available, else python)
+#   TRAIN_EPOCHS (default: 10)
 
-chmod +x dlinear_run.sh
-chmod +x itrans_run.sh
-chmod +x patchtst_run.sh
-chmod +x pixtime_run.sh
-chmod +x timexer_run.sh
+if [[ -x "./.venv/bin/python" ]]; then
+	PYTHON_BIN=${PYTHON_BIN:-./.venv/bin/python}
+else
+	PYTHON_BIN=${PYTHON_BIN:-python}
+fi
+TRAIN_EPOCHS=${TRAIN_EPOCHS:-10}
 
-echo "🚀 Starting sequential execution..."
+echo "Preparing executable scripts..."
+chmod +x pixtime_enhanced_run.sh
 
-echo "▶ Running DLinear..."
-./dlinear_run.sh
-echo "✅ DLinear completed"
+mkdir -p results
+RUN_TS=$(date +"%Y%m%d_%H%M%S")
 
-echo "▶ Running iTransformer..."
-./itrans_run.sh
-echo "✅ iTransformer completed"
+echo "Starting PiXTime baseline + enhancement grid..."
+PYTHON_BIN="$PYTHON_BIN" TRAIN_EPOCHS="$TRAIN_EPOCHS" ./pixtime_enhanced_run.sh
+echo "Grid execution completed."
 
-echo "▶ Running PatchTST..."
-./patchtst_run.sh
-echo "✅ PatchTST completed"
+echo "Generating detailed summary report..."
+"$PYTHON_BIN" evaluate_improvements.py | tee "results/summary_${RUN_TS}.txt"
+cp "results/summary_${RUN_TS}.txt" "results/summary.txt"
 
-echo "▶ Running PiXTime..."
-./pixtime_run.sh
-echo "✅ PiXTime completed"
+echo "Detailed summary saved to: results/summary.txt"
+echo "Timestamped summary saved to: results/summary_${RUN_TS}.txt"
+echo "All run metrics available at: results/enhanced_results.csv"
 
-echo "▶ Running TimeXer..."
-./timexer_run.sh
-echo "✅ TimeXer completed"
-
-echo "🎉 All scripts executed successfully!"
+echo "All baseline + enhancement experiments completed successfully."

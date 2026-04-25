@@ -1,0 +1,1 @@
+data=ETTh1, model=PiXTime, seq_len=96, pred_len=336, features=M, d_model=512, MSE=0.45664262771606445, MAE=0.4450923800468445
