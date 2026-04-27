@@ -10,6 +10,27 @@ set -e
 CONFIGS=("baseline" "contextual_ve" "var_relation" "adaptive_patch" "multiscale_patch" "all_improvements")
 PYTHON_BIN=${PYTHON_BIN:-python}
 TRAIN_EPOCHS=${TRAIN_EPOCHS:-10}
+RESULTS_CSV=${RESULTS_CSV:-results/enhanced_results.csv}
+
+is_done () {
+  local DATA=$1
+  local PRED_LEN=$2
+  local CONFIG=$3
+
+  if [[ ! -f "$RESULTS_CSV" ]]; then
+    return 1
+  fi
+
+  awk -F',' -v d="$DATA" -v p="$PRED_LEN" -v c="$CONFIG" '
+    NR > 1 {
+      gsub(/\r/, "", $0)
+      if ($1 == d && $2 == p && $3 == c) {
+        found = 1
+      }
+    }
+    END { exit(found ? 0 : 1) }
+  ' "$RESULTS_CSV"
+}
 
 run_block () {
   local DATA=$1
@@ -45,6 +66,11 @@ run_block () {
         EXTRA_ARGS+=("--use_contextual_var_emb" "--use_var_relation" "--use_adaptive_patch" "--use_multiscale_patch")
         ;;
     esac
+
+    if is_done "$DATA" "$PRED_LEN" "$config"; then
+      echo "Skipping DATA=${DATA}, pred_len=${PRED_LEN}, config=${config} (already in ${RESULTS_CSV})"
+      continue
+    fi
 
     echo "Running DATA=${DATA}, pred_len=${PRED_LEN}, config=${config}"
 
