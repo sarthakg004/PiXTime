@@ -40,7 +40,9 @@ run_block () {
   local DE_D_FF=$5
   local EN_LAYERS=$6
   local DE_LAYERS=$7
-  local ROOT_ARG=$8
+  local BATCH_SIZE=$8
+  local TRAIN_RATIO=$9
+  local ROOT_ARG=${10}
 
   for config in "${CONFIGS[@]}"; do
     EXTRA_ARGS=()
@@ -81,7 +83,9 @@ run_block () {
       --target OT \
       --seq_len 96 \
       --pred_len ${PRED_LEN} \
+      --batch_size ${BATCH_SIZE} \
       --train_epochs ${TRAIN_EPOCHS} \
+      --train_data_ratio ${TRAIN_RATIO} \
       --d_model ${D_MODEL} \
       --en_d_ff ${EN_D_FF} \
       --de_d_ff ${DE_D_FF} \
@@ -94,49 +98,49 @@ run_block () {
 }
 
 # ===== ETTh1 =====
-run_block "ETTh1" 96 512 2048 2048 1 1 ""
-run_block "ETTh1" 192 512 2048 2048 1 1 ""
-run_block "ETTh1" 336 512 2048 2048 1 1 ""
-run_block "ETTh1" 720 128 512 512 1 1 ""
+run_block "ETTh1" 96 512 2048 2048 1 1 32 1.0 ""
+run_block "ETTh1" 192 512 2048 2048 1 1 32 1.0 ""
+run_block "ETTh1" 336 512 2048 2048 1 1 32 1.0 ""
+run_block "ETTh1" 720 128 512 512 1 1 32 1.0 ""
 
 # ===== ETTh2 =====
-run_block "ETTh2" 96 256 1024 1024 1 1 ""
-run_block "ETTh2" 192 128 512 512 1 1 ""
-run_block "ETTh2" 336 128 512 512 1 1 ""
-run_block "ETTh2" 720 512 2048 2048 1 1 ""
+run_block "ETTh2" 96 256 1024 1024 1 1 32 1.0 ""
+run_block "ETTh2" 192 128 512 512 1 1 32 1.0 ""
+run_block "ETTh2" 336 128 512 512 1 1 32 1.0 ""
+run_block "ETTh2" 720 512 2048 2048 1 1 32 1.0 ""
 
 # ===== ETTm1 =====
-run_block "ETTm1" 96 512 2048 2048 1 1 ""
-run_block "ETTm1" 192 512 2048 2048 1 1 ""
-run_block "ETTm1" 336 512 2048 2048 1 1 ""
-run_block "ETTm1" 720 512 2048 2048 1 1 ""
+run_block "ETTm1" 96 512 2048 2048 1 1 32 1.0 ""
+run_block "ETTm1" 192 512 2048 2048 1 1 32 1.0 ""
+run_block "ETTm1" 336 512 2048 2048 1 1 32 1.0 ""
+run_block "ETTm1" 720 512 2048 2048 1 1 32 1.0 ""
 
 # ===== ETTm2 =====
-run_block "ETTm2" 96 512 2048 2048 1 1 ""
-run_block "ETTm2" 192 256 1024 1024 1 1 ""
-run_block "ETTm2" 336 256 1024 1024 1 1 ""
-run_block "ETTm2" 720 256 1024 1024 1 1 ""
+run_block "ETTm2" 96 512 2048 2048 1 1 32 1.0 ""
+run_block "ETTm2" 192 256 1024 1024 1 1 32 1.0 ""
+run_block "ETTm2" 336 256 1024 1024 1 1 32 1.0 ""
+run_block "ETTm2" 720 256 1024 1024 1 1 32 1.0 ""
 
 # ===== electricity =====
-run_block "electricity" 96 512 2048 2048 2 2 "--root_path ./dataset/electricity/"
-run_block "electricity" 192 512 2048 2048 2 2 "--root_path ./dataset/electricity/"
-run_block "electricity" 336 512 2048 2048 2 2 "--root_path ./dataset/electricity/"
-run_block "electricity" 720 512 2048 2048 2 2 "--root_path ./dataset/electricity/"
+run_block "electricity" 96 512 2048 2048 2 2 8 0.35 "--root_path ./dataset/electricity/"
+run_block "electricity" 192 512 2048 2048 2 2 8 0.35 "--root_path ./dataset/electricity/"
+run_block "electricity" 336 512 2048 2048 2 2 8 0.35 "--root_path ./dataset/electricity/"
+run_block "electricity" 720 512 2048 2048 2 2 8 0.35 "--root_path ./dataset/electricity/"
 
 # ===== exchange_rate =====
-run_block "exchange_rate" 96 64 256 256 1 1 "--root_path ./dataset/exchange_rate/"
-run_block "exchange_rate" 192 64 256 256 1 1 "--root_path ./dataset/exchange_rate/"
-run_block "exchange_rate" 336 64 256 256 1 1 "--root_path ./dataset/exchange_rate/"
-run_block "exchange_rate" 720 128 512 512 1 1 "--root_path ./dataset/exchange_rate/"
+run_block "exchange_rate" 96 64 256 256 1 1 16 0.5 "--root_path ./dataset/exchange_rate/"
+run_block "exchange_rate" 192 64 256 256 1 1 16 0.5 "--root_path ./dataset/exchange_rate/"
+run_block "exchange_rate" 336 64 256 256 1 1 16 0.5 "--root_path ./dataset/exchange_rate/"
+run_block "exchange_rate" 720 128 512 512 1 1 16 0.5 "--root_path ./dataset/exchange_rate/"
 
 # ===== traffic =====
-run_block "traffic" 96 512 2048 2048 1 1 "--root_path ./dataset/traffic/"
-run_block "traffic" 192 512 2048 2048 1 1 "--root_path ./dataset/traffic/"
-run_block "traffic" 336 512 2048 2048 1 1 "--root_path ./dataset/traffic/"
-run_block "traffic" 720 512 2048 2048 1 1 "--root_path ./dataset/traffic/"
+run_block "traffic" 96 512 2048 2048 1 1 8 0.35 "--root_path ./dataset/traffic/"
+run_block "traffic" 192 512 2048 2048 1 1 8 0.35 "--root_path ./dataset/traffic/"
+run_block "traffic" 336 512 2048 2048 1 1 8 0.35 "--root_path ./dataset/traffic/"
+run_block "traffic" 720 512 2048 2048 1 1 8 0.35 "--root_path ./dataset/traffic/"
 
 # ===== weather =====
-run_block "weather" 96 512 2048 2048 1 1 "--root_path ./dataset/weather/"
-run_block "weather" 192 512 2048 2048 1 1 "--root_path ./dataset/weather/"
-run_block "weather" 336 512 2048 2048 1 1 "--root_path ./dataset/weather/"
-run_block "weather" 720 512 2048 2048 1 1 "--root_path ./dataset/weather/"
+run_block "weather" 96 512 2048 2048 1 1 8 0.35 "--root_path ./dataset/weather/"
+run_block "weather" 192 512 2048 2048 1 1 8 0.35 "--root_path ./dataset/weather/"
+run_block "weather" 336 512 2048 2048 1 1 8 0.35 "--root_path ./dataset/weather/"
+run_block "weather" 720 512 2048 2048 1 1 8 0.35 "--root_path ./dataset/weather/"
