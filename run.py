@@ -48,6 +48,9 @@ def work_process(args):
     val_loader, _ = data_provider(args, flag='val')
     test_loader, _ = data_provider(args, flag='test')
 
+    # Keep the parsed config aligned with the dataset-specific variable count.
+    args.enc_in = enc_in
+
     # Model selection
     if args.model == 'DLinear':
         model = DLinear.Model(seq_len=args.seq_len, pred_len=args.pred_len, enc_in=enc_in)
@@ -211,20 +214,26 @@ def work_process(args):
     os.makedirs('results', exist_ok=True)
     enhanced_csv = os.path.join('results', 'enhanced_results.csv')
     write_header = not os.path.exists(enhanced_csv)
-    with open(enhanced_csv, 'a', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        if write_header:
-            writer.writerow(['dataset', 'pred_len', 'config', 'MSE', 'MAE'])
-        writer.writerow([args.data, args.pred_len, args.result_tag, float(mse), float(mae)])
+    try:
+        with open(enhanced_csv, 'a', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            if write_header:
+                writer.writerow(['dataset', 'pred_len', 'config', 'MSE', 'MAE'])
+            writer.writerow([args.data, args.pred_len, args.result_tag, float(mse), float(mae)])
+    except OSError as exc:
+        print(f"Warning: could not write {enhanced_csv}: {exc}")
 
-    # Save results
-    with open(args.evaluation, 'a') as f:
-        f.write(
-            f"data={args.data}, model={args.model}, "
-            f"seq_len={args.seq_len}, pred_len={args.pred_len}, "
-            f"features={args.features}, d_model={args.d_model}, "
-            f"MSE={mse}, MAE={mae}\n"
-        )
+    # Save the verbose evaluation log only when disk space permits.
+    try:
+        with open(args.evaluation, 'a') as f:
+            f.write(
+                f"data={args.data}, model={args.model}, "
+                f"seq_len={args.seq_len}, pred_len={args.pred_len}, "
+                f"features={args.features}, d_model={args.d_model}, "
+                f"MSE={mse}, MAE={mae}\n"
+            )
+    except OSError as exc:
+        print(f"Warning: could not write verbose evaluation log {args.evaluation}: {exc}")
 
 
 def run():
