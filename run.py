@@ -260,6 +260,8 @@ def run():
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--train_epochs', type=int, default=10)
     parser.add_argument('--learning_rate', type=float, default=0.0001)
+    parser.add_argument('--train_data_ratio', type=float, default=1.0,
+                        help='Fraction of the training split to use for memory-constrained runs')
     parser.add_argument('--seed', type=int, default=47)
     parser.add_argument('--loss', type=str, default='MSE')
     parser.add_argument('--lradj', type=str, default='type1')
